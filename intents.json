@@ -42,6 +42,21 @@
                     "name": "temperatureIntent",
                     "slots": [],
                     "samples": []
+                },
+                {
+                    "name": "clothingIntent",
+                    "slots": [],
+                    "samples": []
+                },
+                {
+                    "name": "miscIntent",
+                    "slots": [],
+                    "samples": []
+                },
+                {
+                    "name": "aboutIntent",
+                    "slots": [],
+                    "samples": []
                 }
             ],
             "types": []
