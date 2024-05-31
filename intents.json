@@ -36,12 +36,24 @@
                 {
                     "name": "weatherIntent",
                     "slots": [],
-                    "samples": []
+                    "samples": [
+                        "Can you tell me the weather",
+                        "What is the current weather ",
+                        "How is the weather",
+                        "What is the weather like",
+                        "Invoke weather intent"
+                    ]
                 },
                 {
                     "name": "temperatureIntent",
                     "slots": [],
-                    "samples": []
+                    "samples": [
+                        "What is the temperature like",
+                        "How cold is it outside",
+                        "How hot is it outside",
+                        "What is the current temperature",
+                        "Invoke temperature intent"
+                    ]
                 },
                 {
                     "name": "clothingIntent",
