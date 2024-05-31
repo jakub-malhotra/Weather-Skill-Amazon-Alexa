@@ -58,17 +58,36 @@
                 {
                     "name": "clothingIntent",
                     "slots": [],
-                    "samples": []
+                    "samples": [
+                        "Should I wear a t-shirt or sweater today",
+                        "Should I wear shorts or pants today",
+                        "What is the best clothing option today",
+                        "What do you recommend to wear",
+                        "What should I wear today",
+                        "Invoke clothing Intent"
+                    ]
                 },
                 {
                     "name": "miscIntent",
                     "slots": [],
-                    "samples": []
+                    "samples": [
+                        "What other data do you have",
+                        "What else should I know",
+                        "Tell me the miscellaneous information",
+                        "Invoke misc intent",
+                        "invoke miscellaneous intent"
+                    ]
                 },
                 {
                     "name": "aboutIntent",
                     "slots": [],
-                    "samples": []
+                    "samples": [
+                        "What do I say",
+                        "How does this work",
+                        "What does this skill do",
+                        "Tell me about this skill",
+                        "Invoke about intent"
+                    ]
                 }
             ],
             "types": []
