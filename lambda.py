@@ -8,6 +8,8 @@ Created On: June 2024
 
 import logging
 import ask_sdk_core.utils as ask_utils
+import requests
+import constants
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
@@ -19,17 +21,23 @@ from ask_sdk_model import Response
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+def get_weather_info():
+    try:
+        api_url = f"https://api.openweathermap.org/data/2.5/weather?lat={constants.LATITUDE}&lon={constants.LONGITUDE}&appid={constants.API_KEY}&units=metric"
+        response = requests.get(api_url)
+        response.raise_for_status()
+        return response
+    except requests.RequestException as error_code:
+        logger.error(f"Error fetching weather data: {error_code}")
+        return None
 
 class LaunchRequestHandler(AbstractRequestHandler):
     """Handler for Skill Launch."""
     def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
-
         return ask_utils.is_request_type("LaunchRequest")(handler_input)
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        speak_output = "Welcome to the Weather Tool Skill."
+        speak_output = "Welcome to the Weather Tool Skill. You can ask me about the weather."
 
         return (
             handler_input.response_builder
@@ -42,17 +50,19 @@ class LaunchRequestHandler(AbstractRequestHandler):
 class HelloWorldIntentHandler(AbstractRequestHandler):
     """Handler for Hello World Intent."""
     def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
         return ask_utils.is_intent_name("HelloWorldIntent")(handler_input)
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        speak_output = "Hello World!, You have triggered the Hello World Intent"
+        api_response = get_weather_info()
+        if api_response:
+            status_code = api_response.status_code
+            speak_output = f"Hello World!, The API status code is {status_code}."
+        else:
+            speak_output = "Hello World!, There was an error fetching the weather information."
 
         return (
             handler_input.response_builder
                 .speak(speak_output)
-                # .ask("add a reprompt if you want to keep the session open for the user to respond")
                 .response
         )
 
@@ -60,11 +70,9 @@ class HelloWorldIntentHandler(AbstractRequestHandler):
 class HelpIntentHandler(AbstractRequestHandler):
     """Handler for Help Intent."""
     def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
         return ask_utils.is_intent_name("AMAZON.HelpIntent")(handler_input)
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
         speak_output = "You can say hello to me! How can I help?"
 
         return (
@@ -78,12 +86,10 @@ class HelpIntentHandler(AbstractRequestHandler):
 class CancelOrStopIntentHandler(AbstractRequestHandler):
     """Single handler for Cancel and Stop Intent."""
     def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
         return (ask_utils.is_intent_name("AMAZON.CancelIntent")(handler_input) or
                 ask_utils.is_intent_name("AMAZON.StopIntent")(handler_input))
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
         speak_output = "Goodbye!"
 
         return (
@@ -92,31 +98,27 @@ class CancelOrStopIntentHandler(AbstractRequestHandler):
                 .response
         )
 
+
 class FallbackIntentHandler(AbstractRequestHandler):
     """Single handler for Fallback Intent."""
     def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
         return ask_utils.is_intent_name("AMAZON.FallbackIntent")(handler_input)
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
         logger.info("In FallbackIntentHandler")
         speech = "Hmm, I'm not sure. You can say Hello or Help. What would you like to do?"
         reprompt = "I didn't catch that. What can I help you with?"
 
         return handler_input.response_builder.speak(speech).ask(reprompt).response
 
+
 class SessionEndedRequestHandler(AbstractRequestHandler):
     """Handler for Session End."""
     def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
         return ask_utils.is_request_type("SessionEndedRequest")(handler_input)
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-
         # Any cleanup logic goes here.
-
         return handler_input.response_builder.response
 
 
@@ -127,18 +129,15 @@ class IntentReflectorHandler(AbstractRequestHandler):
     handler chain below.
     """
     def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
         return ask_utils.is_request_type("IntentRequest")(handler_input)
 
     def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
         intent_name = ask_utils.get_intent_name(handler_input)
-        speak_output = "You just triggered " + intent_name + "."
+        speak_output = f"You just triggered {intent_name}."
 
         return (
             handler_input.response_builder
                 .speak(speak_output)
-                # .ask("add a reprompt if you want to keep the session open for the user to respond")
                 .response
         )
 
@@ -149,11 +148,9 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
     the intent being invoked or included it in the skill builder below.
     """
     def can_handle(self, handler_input, exception):
-        # type: (HandlerInput, Exception) -> bool
         return True
 
     def handle(self, handler_input, exception):
-        # type: (HandlerInput, Exception) -> Response
         logger.error(exception, exc_info=True)
 
         speak_output = "Sorry, I do not understand what you asked, please try again."
@@ -169,7 +166,6 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
 # payloads to the handlers above. Make sure any new handlers or interceptors you've
 # defined are included below. The order matters - they're processed top to bottom.
 
-
 sb = SkillBuilder()
 
 sb.add_request_handler(LaunchRequestHandler())
@@ -178,7 +174,7 @@ sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())
-sb.add_request_handler(IntentReflectorHandler()) # make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
+sb.add_request_handler(IntentReflectorHandler())  # make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
 
 sb.add_exception_handler(CatchAllExceptionHandler())
 

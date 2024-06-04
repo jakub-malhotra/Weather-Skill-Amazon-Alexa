@@ -50,7 +50,7 @@ class HelloWorldIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         # call api
-        api_request = requests.get(f"https://api.openweathermap.org/data/2.5/weather?lat={constants.LATITUDE}&lon={constants.LONGITUDE}&appid={secrets.API_KEY}&units=metric")
+        api_request = requests.get(f"https://api.openweathermap.org/data/2.5/weather?lat={constants.LATITUDE}&lon={constants.LONGITUDE}&appid={constants.API_KEY}&units=metric")
         speak_output = (f"Hello World!, The api status code is {api_request.status_code}")
 
         return (
