@@ -66,6 +66,33 @@ class HelloWorldIntentHandler(AbstractRequestHandler):
                 .response
         )
 
+class WeatherIntentHandler(AbstractRequestHandler):
+    """Handler for Weather Intent."""
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("WeatherIntent")(handler_input)
+
+    def handle(self, handler_input):
+        speak_output = "You triggered weather intent."
+
+        return (
+            handler_input.response_builder
+                .speak(speak_output)
+                .response
+        )
+
+class TemperatureIntentHandler(AbstractRequestHandler):
+    """Handler for Temperature Intent."""
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("TemperatureIntent")(handler_input)
+
+    def handle(self, handler_input):
+        speak_output = "You triggered temperature intent."
+
+        return (
+            handler_input.response_builder
+                .speak(speak_output)
+                .response
+        )
 
 class HelpIntentHandler(AbstractRequestHandler):
     """Handler for Help Intent."""
@@ -170,6 +197,8 @@ sb = SkillBuilder()
 
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(HelloWorldIntentHandler())
+sb.add_request_handler(WeatherIntentHandler())
+sb.add_request_handler(TemperatureIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
