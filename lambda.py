@@ -94,6 +94,34 @@ class TemperatureIntentHandler(AbstractRequestHandler):
                 .response
         )
 
+class ClothingIntentHandler(AbstractRequestHandler):
+    """Handler for Clothing Intent."""
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("ClothingIntent")(handler_input)
+
+    def handle(self, handler_input):
+        speak_output = "You triggered clothing intent."
+
+        return (
+            handler_input.response_builder
+                .speak(speak_output)
+                .response
+        )
+
+class MiscIntentHandler(AbstractRequestHandler):
+    """Handler for Temperature Intent."""
+    def can_handle(self, handler_input):
+        return ask_utils.is_intent_name("MiscIntent")(handler_input)
+
+    def handle(self, handler_input):
+        speak_output = "You triggered miscellaneous intent."
+
+        return (
+            handler_input.response_builder
+                .speak(speak_output)
+                .response
+        )
+
 class HelpIntentHandler(AbstractRequestHandler):
     """Handler for Help Intent."""
     def can_handle(self, handler_input):
@@ -199,6 +227,8 @@ sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(HelloWorldIntentHandler())
 sb.add_request_handler(WeatherIntentHandler())
 sb.add_request_handler(TemperatureIntentHandler())
+sb.add_request_handler(ClothingIntentHandler())
+sb.add_request_handler(MiscIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(FallbackIntentHandler())
