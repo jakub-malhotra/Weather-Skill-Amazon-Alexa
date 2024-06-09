@@ -26,7 +26,7 @@ def get_weather_info():
         api_url = f"https://api.openweathermap.org/data/2.5/weather?lat={constants.LATITUDE}&lon={constants.LONGITUDE}&appid={constants.API_KEY}&units=metric"
         response = requests.get(api_url)
         response.raise_for_status()
-        return response
+        return response.json()
     except requests.RequestException as error_code:
         logger.error(f"Error fetching weather data: {error_code}")
         return None
@@ -55,7 +55,7 @@ class HelloWorldIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         api_response = get_weather_info()
         if api_response:
-            status_code = api_response.status_code
+            status_code = api_response["cod"]
             speak_output = f"Hello World!, The API status code is {status_code}."
         else:
             speak_output = "Hello World!, There was an error fetching the weather information."
@@ -69,10 +69,34 @@ class HelloWorldIntentHandler(AbstractRequestHandler):
 class WeatherIntentHandler(AbstractRequestHandler):
     """Handler for Weather Intent."""
     def can_handle(self, handler_input):
-        return ask_utils.is_intent_name("WeatherIntent")(handler_input)
+        return ask_utils.is_intent_name("weatherIntent")(handler_input)
 
     def handle(self, handler_input):
-        speak_output = "You triggered weather intent."
+        api_response = get_weather_info()
+        if api_response:
+            try:
+                weather = api_response["weather"][0]["description"]
+                speak_output = f"The current weather is {weather}"
+                # define rain variable only if api_response has that attribute
+                try:
+                    rain = api_response["rain"]["1h"]
+                except KeyError:
+                    rain = None
+                # define snow variable only if api_response has that attribute
+                try:
+                    snow = api_response["snow"]["1h"]
+                except KeyError:
+                    snow = None
+                # Add rain or snow to the speak_output
+                if rain:
+                    speak_output += f", with {rain} mm of rain in the last hour"
+                if snow:
+                    speak_output += f", with {snow} mm of snow in the last hour"
+            except KeyError as error:
+                logger.error(f"Key error: {error}")
+                speak_output = "There was an error processing the weather information."
+        else:
+            speak_output = "There was an error fetching the weather information."
 
         return (
             handler_input.response_builder
@@ -83,10 +107,20 @@ class WeatherIntentHandler(AbstractRequestHandler):
 class TemperatureIntentHandler(AbstractRequestHandler):
     """Handler for Temperature Intent."""
     def can_handle(self, handler_input):
-        return ask_utils.is_intent_name("TemperatureIntent")(handler_input)
+        return ask_utils.is_intent_name("temperatureIntent")(handler_input)
 
     def handle(self, handler_input):
-        speak_output = "You triggered temperature intent."
+        api_response = get_weather_info()
+        if api_response:
+            try:
+                temperature = api_response["main"]["temp"]
+                feels_like = api_response["main"]["feels_like"]
+                speak_output = f"The current temperature is {temperature}°C, but feels like {feels_like}°C."
+            except KeyError as error:
+                logger.error(f"Key error: {error}")
+                speak_output = "There was an error processing the temperature information."
+        else:
+            speak_output = "There was an error fetching the weather information."
 
         return (
             handler_input.response_builder
@@ -97,7 +131,7 @@ class TemperatureIntentHandler(AbstractRequestHandler):
 class ClothingIntentHandler(AbstractRequestHandler):
     """Handler for Clothing Intent."""
     def can_handle(self, handler_input):
-        return ask_utils.is_intent_name("ClothingIntent")(handler_input)
+        return ask_utils.is_intent_name("clothingIntent")(handler_input)
 
     def handle(self, handler_input):
         speak_output = "You triggered clothing intent."
@@ -109,9 +143,9 @@ class ClothingIntentHandler(AbstractRequestHandler):
         )
 
 class MiscIntentHandler(AbstractRequestHandler):
-    """Handler for Temperature Intent."""
+    """Handler for Misc Intent."""
     def can_handle(self, handler_input):
-        return ask_utils.is_intent_name("MiscIntent")(handler_input)
+        return ask_utils.is_intent_name("miscIntent")(handler_input)
 
     def handle(self, handler_input):
         speak_output = "You triggered miscellaneous intent."
