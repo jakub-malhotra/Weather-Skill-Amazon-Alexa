@@ -23,7 +23,7 @@ logger.setLevel(logging.INFO)
 
 def get_weather_info():
     try:
-        api_url = f"https://api.openweathermap.org/data/2.5/weather?lat={constants.LATITUDE}&lon={constants.LONGITUDE}&appid={constants.API_KEY}&units=metric"
+        api_url = (f"https://api.openweathermap.org/data/2.5/weather?lat={constants.LATITUDE}&lon={constants.LONGITUDE}&appid={constants.API_KEY}&units=metric")
         response = requests.get(api_url)
         response.raise_for_status()
         return response.json()
@@ -56,7 +56,7 @@ class HelloWorldIntentHandler(AbstractRequestHandler):
         api_response = get_weather_info()
         if api_response:
             status_code = api_response["cod"]
-            speak_output = f"Hello World!, The API status code is {status_code}."
+            speak_output = (f"Hello World!, The API status code is {status_code}.")
         else:
             speak_output = "Hello World!, There was an error fetching the weather information."
 
@@ -76,7 +76,7 @@ class WeatherIntentHandler(AbstractRequestHandler):
         if api_response:
             try:
                 weather = api_response["weather"][0]["description"]
-                speak_output = f"The current weather is {weather}"
+                speak_output = (f"The current weather is {weather}")
                 # define rain variable only if api_response has that attribute
                 try:
                     rain = api_response["rain"]["1h"]
@@ -89,9 +89,9 @@ class WeatherIntentHandler(AbstractRequestHandler):
                     snow = None
                 # Add rain or snow to the speak_output
                 if rain:
-                    speak_output += f", with {rain} mm of rain in the last hour"
+                    speak_output += (f", with {rain} mm of rain in the last hour")
                 if snow:
-                    speak_output += f", with {snow} mm of snow in the last hour"
+                    speak_output += (f", with {snow} mm of snow in the last hour")
             except KeyError as error:
                 logger.error(f"Key error: {error}")
                 speak_output = "There was an error processing the weather information."
@@ -115,7 +115,7 @@ class TemperatureIntentHandler(AbstractRequestHandler):
             try:
                 temperature = api_response["main"]["temp"]
                 feels_like = api_response["main"]["feels_like"]
-                speak_output = f"The current temperature is {temperature}°C, but feels like {feels_like}°C."
+                speak_output = (f"The current temperature is {temperature}°C, but feels like {feels_like}°C.")
             except KeyError as error:
                 logger.error(f"Key error: {error}")
                 speak_output = "There was an error processing the temperature information."
@@ -148,7 +148,22 @@ class MiscIntentHandler(AbstractRequestHandler):
         return ask_utils.is_intent_name("miscIntent")(handler_input)
 
     def handle(self, handler_input):
-        speak_output = "You triggered miscellaneous intent."
+        api_response = get_weather_info()
+        if api_response:
+            try:
+                humidity = api_response["main"]["humidity"]
+                wind_speed_metres = api_response["wind"]["speed"]
+                clouds = api_response["clouds"]["all"]
+                # convert windspeed from m/s to km/h
+                wind_speed_kilometers = (wind_speed_metres * 3.6)
+                # and round windspeed because bad things happen if you dont
+                wind_speed = round(wind_speed_kilometers, 2)
+                speak_output = (f"The current humidity is {humidity}%, The current windspeed is {wind_speed} km/h, The current cloudiness is {clouds}%.")
+            except KeyError as error:
+                logger.error(f"Key error: {error}")
+                speak_output = "There was an error processing the temperature information."
+        else:
+            speak_output = "There was an error fetching the weather information."
 
         return (
             handler_input.response_builder
@@ -162,7 +177,8 @@ class HelpIntentHandler(AbstractRequestHandler):
         return ask_utils.is_intent_name("AMAZON.HelpIntent")(handler_input)
 
     def handle(self, handler_input):
-        speak_output = "You can say hello to me! How can I help?"
+        # fixed reply to inform user
+        speak_output = "This is the Weather Tool Skill designed to tell the user what to wear based on the weather. You can ask me for the weather, for the temperature, for miscellaneous weather info, or you can ask me what you should wear"
 
         return (
             handler_input.response_builder
@@ -222,7 +238,7 @@ class IntentReflectorHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         intent_name = ask_utils.get_intent_name(handler_input)
-        speak_output = f"You just triggered {intent_name}."
+        speak_output = (f"You just triggered {intent_name}.")
 
         return (
             handler_input.response_builder
