@@ -134,8 +134,38 @@ class ClothingIntentHandler(AbstractRequestHandler):
         return ask_utils.is_intent_name("clothingIntent")(handler_input)
 
     def handle(self, handler_input):
-        speak_output = "You triggered clothing intent."
-
+        api_response = get_weather_info()
+        if api_response:
+            try:
+                feels_like = api_response["main"]["feels_like"]
+                try:
+                    rain = api_response["rain"]["1h"]
+                except KeyError:
+                    rain = None
+                try:
+                    snow = api_response["snow"]["1h"]
+                except KeyError:
+                    snow = None
+                if feels_like < 0:
+                    clothing_recommendation = "It's below zero, wear a jacket over a sweater and thick pants. "
+                elif 0 <= feels_like <= 10:
+                    clothing_recommendation = "Wear a sweater and pants. "
+                elif 11 <= feels_like <= 15:
+                    clothing_recommendation = "Wear a t-shirt along with pants. "
+                elif 16 <= feels_like < 25:
+                    clothing_recommendation = "Wear a t-shirt and shorts. "
+                else:
+                    clothing_recommendation = "Wear shorts and a t-shirt, don't forget to stay hydrated. "
+                if rain is not None and rain > 0:
+                    clothing_recommendation += "Also, it is raining. Don't forget an umbrella or a raincoat. "
+                if snow is not None and snow > 0:
+                    clothing_recommendation += "Also, it's snowing. Wear boots and a jacket. "
+                speak_output = clothing_recommendation
+            except KeyError as error:
+                logger.error(f"Key error: {error}")
+                speak_output = "There was an error processing the weather information."
+        else:
+            speak_output = "There was an error fetching the weather information."
         return (
             handler_input.response_builder
                 .speak(speak_output)
