@@ -4,6 +4,8 @@
 This is the Weather Tool using the Alexa Skills Kit SDK for Python.
 Created By: Jakub Malhotra
 Created On: June 2024
+Terms & Conditions URL: https://www.termsfeed.com/live/d0f70f7f-840f-4a4e-9925-8330cb77bc0d
+Privacy Policy URL: https://www.termsfeed.com/live/cffb753c-ad54-4271-9448-c2c8b0a834d9
 """
 
 import logging
