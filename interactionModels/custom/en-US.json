@@ -1,0 +1,97 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": [
+            "What do I say to you",
+            "How does this work",
+            "What does this skill do",
+            "tell me about this skill",
+            "invoke help intent",
+            "test help intent"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "slots": [],
+          "name": "HelloWorldIntent",
+          "samples": [
+            "invoke hello world",
+            "say hi world",
+            "say hi",
+            "say hello world",
+            "say hello"
+          ]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "slots": [],
+          "name": "weatherIntent",
+          "samples": [
+            "Can you tell me the weather",
+            "What is the current weather ",
+            "How is the weather",
+            "What is the weather like",
+            "Test weather intent",
+            "Invoke weather intent"
+          ]
+        },
+        {
+          "slots": [],
+          "name": "temperatureIntent",
+          "samples": [
+            "What is the temperature like",
+            "How cold is it outside",
+            "How hot is it outside",
+            "What is the current temperature",
+            "Test temperature intent",
+            "Invoke temperature intent"
+          ]
+        },
+        {
+          "slots": [],
+          "name": "clothingIntent",
+          "samples": [
+            "Should I wear a t-shirt or sweater today",
+            "Should I wear shorts or pants today",
+            "What is the best clothing option today",
+            "What do you recommend to wear",
+            "What should I wear today",
+            "Test clothing intent",
+            "Invoke clothing Intent"
+          ]
+        },
+        {
+          "slots": [],
+          "name": "miscIntent",
+          "samples": [
+            "What other data do you have",
+            "What else should I know",
+            "Tell me the miscellaneous information",
+            "Invoke misc intent",
+            "Test misc intent",
+            "invoke miscellaneous intent"
+          ]
+        }
+      ],
+      "types": [],
+      "invocationName": "weather tool"
+    }
+  }
+}
