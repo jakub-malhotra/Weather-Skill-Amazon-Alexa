@@ -21,3 +21,8 @@ The skill supports the following intents:
 - TemperatureIntent: Provides the current temperature and how it feels.
 - ClothingIntent: Recommends clothing based on the current weather.
 - MiscIntent: Provides miscellaneous weather information like humidity, wind speed, and cloudiness.
+
+## Terms & Conditions and Privacy Policy
+
+- [Terms & Conditions](https://www.termsfeed.com/live/d0f70f7f-840f-4a4e-9925-8330cb77bc0d)
+- [Privacy Policy](https://www.termsfeed.com/live/cffb753c-ad54-4271-9448-c2c8b0a834d9)
